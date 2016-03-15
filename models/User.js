@@ -9,7 +9,7 @@ var userSchema = new mongoose.Schema({
   passwordResetExpires: Date,
 
   github: String,
-
+  tokens: Array,
 
   profile: {
     name: { type: String, default: '' },
