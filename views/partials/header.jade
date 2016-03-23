@@ -8,19 +8,19 @@
         span.icon-bar
       a.navbar-brand(href='/')
         i.fa.fa-cube
-        | Project name
+        | Proje Adı
     .collapse.navbar-collapse
       ul.nav.navbar-nav
-        li(class=(title == 'Home') ? 'active' : undefined)
-          a(href='/') Home
+        li(class=(title == 'Anasayfa') ? 'active' : undefined)
+          a(href='/') Anasayfa
        
       ul.nav.navbar-nav.navbar-right
         if !user
           li(class=(title == 'Login') ? 'active' : undefined)
-            a(href='/login') Login
+            a(href='/login') Giriş Yap
           
         else
-          li.dropdown(class=(title == 'Account Management') ? 'active' : undefined)
+          li.dropdown(class=(title == 'Hesab Yönetimi') ? 'active' : undefined)
             a.dropdown-toggle(href='#', data-toggle='dropdown')
               if user.profile.picture
                 img(src='#{user.profile.picture}')
@@ -30,7 +30,7 @@
               i.caret
             ul.dropdown-menu
               li
-                a(href='/account') My Account
+                a(href='/account') Hesabım
               li.divider
               li
-                a(href='/logout') Logout
+                a(href='/logout') Çıkış 

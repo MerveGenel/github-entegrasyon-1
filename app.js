@@ -19,7 +19,7 @@ var passport = require('passport');
 var expressValidator = require('express-validator');
 var sass = require('node-sass-middleware');
 var multer = require('multer');
-var upload = multer({ dest: path.join(__dirname, 'uploads') });
+
 
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
@@ -92,6 +92,7 @@ app.use(function(req, res, next) {
     lusca.csrf()(req, res, next);
   }
 });
+
 app.use(lusca.xframe('SAMEORIGIN'));
 app.use(lusca.xssProtection(true));
 app.use(function(req, res, next) {
@@ -114,29 +115,16 @@ app.get('/', homeController.index);
 app.get('/login', userController.getLogin);
 app.post('/login', userController.postLogin);
 app.get('/logout', userController.logout);
-app.get('/forgot', userController.getForgot);
-app.post('/forgot', userController.postForgot);
-app.get('/reset/:token', userController.getReset);
-app.post('/reset/:token', userController.postReset);
-app.get('/signup', userController.getSignup);
-app.post('/signup', userController.postSignup);
-app.get('/contact', contactController.getContact);
-app.post('/contact', contactController.postContact);
 app.get('/account', passportConfig.isAuthenticated, userController.getAccount);
 app.post('/account/profile', passportConfig.isAuthenticated, userController.postUpdateProfile);
-app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword);
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
-app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
 
 /**
  * API examples routes.
  */
  app.get('/api', apiController.getApi);
- app.get('/api/clockwork', apiController.getClockwork);
-app.post('/api/clockwork', apiController.postClockwork);
 app.get('/api/github', passportConfig.isAuthenticated, passportConfig.isAuthorized, apiController.getGithub);
-app.get('/api/upload', apiController.getFileUpload);
-app.post('/api/upload', upload.single('myFile'), apiController.postFileUpload);
+
 
 /**
  * OAuth authentication routes. (Sign in)
@@ -145,15 +133,6 @@ app.post('/api/upload', upload.single('myFile'), apiController.postFileUpload);
 app.get('/auth/github', passport.authenticate('github'));
 app.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/login' }), function(req, res) {
   res.redirect(req.session.returnTo || '/');
-});
-
-
-/**
- * OAuth authorization routes. (API examples)
- */
-app.get('/auth/github', passport.authorize('github'));
-app.get('/auth/github/callback', passport.authorize('github', { failureRedirect: '/api' }), function(req, res) {
-  res.redirect('/api/fgithub');
 });
 
 /**

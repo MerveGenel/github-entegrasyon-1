@@ -2,12 +2,12 @@ extends ../layout
 
 block content
   .page-header
-    h3 Giriş Yap
- 
-    .form-group
+    h3 Profil Bilgisi
+
+  form.form-horizontal(action='/admin', method='POST')
+  .form-group
       .col-sm-offset-3.col-sm-7
 
         a.btn.btn-block.btn-github.btn-social(href='/auth/github')
           i.fa.fa-github
           | Github ile bağlan
-        

@@ -105,6 +105,7 @@ passport.use(new GitHubStrategy({
             done(err, user);
           });
         }
+
       });
     });
   }
