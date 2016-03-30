@@ -33,8 +33,8 @@ dotenv.load({ path: '.env.example' });
  */
 var homeController = require('./controllers/home');
 var userController = require('./controllers/user');
-var apiController = require('./controllers/api');
-var contactController = require('./controllers/contact');
+
+
 
 /**
  * API keys and Passport configuration.
@@ -61,6 +61,7 @@ mongoose.connection.on('error', function() {
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+
 app.use(compress());
 app.use(sass({
   src: path.join(__dirname, 'public'),
@@ -85,13 +86,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
-app.use(function(req, res, next) {
-  if (req.path === '/api/upload') {
-    next();
-  } else {
-    lusca.csrf()(req, res, next);
-  }
-});
 
 app.use(lusca.xframe('SAMEORIGIN'));
 app.use(lusca.xssProtection(true));
@@ -99,13 +93,7 @@ app.use(function(req, res, next) {
   res.locals.user = req.user;
   next();
 });
-app.use(function(req, res, next) {
-  // After successful login, redirect back to /api, /contact or /
-  if (/(api)|(contact)|(^\/$)/i.test(req.path)) {
-    req.session.returnTo = req.path;
-  }
-  next();
-});
+
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: 31557600000 }));
 
 /**
@@ -113,8 +101,8 @@ app.use(express.static(path.join(__dirname, 'public'), { maxAge: 31557600000 }))
  */
 app.get('/', homeController.index);
 app.get('/login', userController.getLogin);
-app.post('/login', userController.postLogin);
 app.get('/logout', userController.logout);
+app.get('/admin', userController.isAdmin);
 app.get('/account', passportConfig.isAuthenticated, userController.getAccount);
 app.post('/account/profile', passportConfig.isAuthenticated, userController.postUpdateProfile);
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
@@ -122,8 +110,8 @@ app.post('/account/delete', passportConfig.isAuthenticated, userController.postD
 /**
  * API examples routes.
  */
- app.get('/api', apiController.getApi);
-app.get('/api/github', passportConfig.isAuthenticated, passportConfig.isAuthorized, apiController.getGithub);
+
+
 
 
 /**
@@ -132,7 +120,7 @@ app.get('/api/github', passportConfig.isAuthenticated, passportConfig.isAuthoriz
 
 app.get('/auth/github', passport.authenticate('github'));
 app.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/login' }), function(req, res) {
-  res.redirect(req.session.returnTo || '/');
+  res.redirect(req.session.returnTo || '/admin');
 });
 
 /**

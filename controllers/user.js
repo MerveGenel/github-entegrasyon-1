@@ -11,46 +11,16 @@ var User = require('../models/User');
  */
 exports.getLogin = function(req, res) {
   if (req.user) {
-    return res.redirect('/');
-  }
+ return res.redirect('/');
+}
   res.render('account/login', {
     title: 'Login'
   });
+
 };
 
+//Admin panel
 
-/**
- * POST /login
- * Sign in using email and password.
- */
-exports.postLogin = function(req, res, next) {
-  req.assert('email', 'Email is not valid').isEmail();
-  req.assert('password', 'Password cannot be blank').notEmpty();
-
-  var errors = req.validationErrors();
-
-  if (errors) {
-    req.flash('errors', errors);
-    return res.redirect('/login');
-  }
-
-  passport.authenticate('local', function(err, user, info) {
-    if (err) {
-      return next(err);
-    }
-    if (!user) {
-      req.flash('errors', info);
-      return res.redirect('/login');
-    }
-    req.logIn(user, function(err) {
-      if (err) {
-        return next(err);
-      }
-      req.flash('success', { msg: 'Success! You are logged in.' });
-      res.redirect(req.session.returnTo || '/');
-    });
-  })(req, res, next);
-};
 
 /**
  * GET /logout
@@ -61,18 +31,25 @@ exports.logout = function(req, res) {
   res.redirect('/');
 };
 
+
+
 /**
 * GET /admin
 */
-exports.getAdmin = function(req, res) {
- User.findById(req.user.email, function(err, user) {
- if (user.email == "zeynep.ucar016@gmail.com") {
-    res.redirect('/admin');
-    user.profile.name = "Admin";
- }
+exports.isAdmin = function(req, res) {
+  User.find(function(err, user) {
 
-});
-}
+    if (req.user.email == 'zeynep.ucar016@gmail.com') {
+      req.user.profile.name =  'admin';
+    }
+    if(req.user.email != 'zeynep.ucar016@gmail.com'){
+      return res.redirect('/');
+    }
+    res.render('account/admin', {
+      title: 'Admin'
+    });
+  });
+};
 
 /**
  * GET /account
@@ -123,5 +100,3 @@ exports.postDeleteAccount = function(req, res, next) {
     res.redirect('/');
   });
 };
-
-
