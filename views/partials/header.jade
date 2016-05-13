@@ -8,17 +8,17 @@
         span.icon-bar
       a.navbar-brand(href='/')
         i.fa.fa-cube
-        | Proje Adı
+        | Github Entegrasyon
     .collapse.navbar-collapse
       ul.nav.navbar-nav
         li(class=(title == 'Anasayfa') ? 'active' : undefined)
           a(href='/') Anasayfa
-       
+
       ul.nav.navbar-nav.navbar-right
         if !user
           li(class=(title == 'Login') ? 'active' : undefined)
-            a(href='/login') Giriş Yap
-          
+            a(href='/loginBolum') Giriş Yap
+
         else
           li.dropdown(class=(title == 'Hesab Yönetimi') ? 'active' : undefined)
             a.dropdown-toggle(href='#', data-toggle='dropdown')
@@ -33,4 +33,4 @@
                 a(href='/account') Hesabım
               li.divider
               li
-                a(href='/logout') Çıkış 
+                a(href='/logout') Çıkış

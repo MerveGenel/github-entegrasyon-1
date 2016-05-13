@@ -21,6 +21,7 @@ var sass = require('node-sass-middleware');
 var multer = require('multer');
 
 
+
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
  *
@@ -101,8 +102,10 @@ app.use(express.static(path.join(__dirname, 'public'), { maxAge: 31557600000 }))
  */
 app.get('/', homeController.index);
 app.get('/login', userController.getLogin);
+app.get('/loginBolum', userController.getLoginBolum);
 app.get('/logout', userController.logout);
 app.get('/admin', userController.isAdmin);
+app.get('/kisiler', userController.isKisiler);
 app.get('/account', passportConfig.isAuthenticated, userController.getAccount);
 app.post('/account/profile', passportConfig.isAuthenticated, userController.postUpdateProfile);
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
@@ -121,6 +124,12 @@ app.post('/account/delete', passportConfig.isAuthenticated, userController.postD
 app.get('/auth/github', passport.authenticate('github'));
 app.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/login' }), function(req, res) {
   res.redirect(req.session.returnTo || '/admin');
+});
+
+//gmail
+app.get('/auth/google', passport.authenticate('google', { scope: 'profile email' }));
+app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), function(req, res) {
+  res.redirect(req.session.returnTo || '/');
 });
 
 /**

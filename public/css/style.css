@@ -1,0 +1,74 @@
+.giris-button {
+    background: #607d8b !important;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 423px;
+    height: 80px;
+    margin: auto !important;
+    box-shadow: 0 12px 15px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19) !important;
+    border-radius: 1rem !important;
+}
+.content {
+    height: 92%;
+    width: 100%;
+    display: table;
+}
+
+.bolum-button {
+    background:  hsl(0, 69%, 22%) !important;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 423px;
+    height: 80px;
+    margin: auto !important;
+    box-shadow: 0 12px 15px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19) !important;
+        border-radius: 1rem !important;
+}
+.muh-logo{
+  position: inherit;
+  left: 18px;
+  width: 43px;
+  height: 43px;
+  bottom: 18px;
+
+
+}
+
+.text{
+  position: absolute;
+  left: 69px;
+  bottom: 29px;
+  font-weight: 200 !important;
+
+}
+.bolum {
+  background:  hsl(0, 69%, 22%) !important;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 423px;
+  height: 80px;
+  margin: auto !important;
+  box-shadow: 0 12px 15px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19) !important;
+  border-radius: 1rem !important;
+}
+.imge{
+    position: absolute;
+    left: 38px;
+    bottom: 31px;
+}
+.g-text{
+    position: absolute;
+    left: 67px;
+    bottom: 29px;
+    font-weight: 200 !important;
+
+}

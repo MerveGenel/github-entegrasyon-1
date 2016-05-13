@@ -1,6 +1,7 @@
 var _ = require('lodash');
 var passport = require('passport');
 var request = require('request');
+var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var LocalStrategy = require('passport-local').Strategy;
 var GitHubStrategy = require('passport-github').Strategy;
 var OpenIDStrategy = require('passport-openid').Strategy;
@@ -18,7 +19,6 @@ passport.deserializeUser(function(id, done) {
     done(err, user);
   });
 });
-
 
 
 
@@ -58,8 +58,6 @@ passport.use(new GitHubStrategy({
           user.tokens.push({ kind: 'github', accessToken: accessToken });
           user.profile.name = user.profile.name || profile.displayName;
           user.profile.picture = user.profile.picture || profile._json.avatar_url;
-          user.profile.location = user.profile.location || profile._json.location;
-          user.profile.website = user.profile.website || profile._json.blog;
           user.save(function(err) {
             req.flash('info', { msg: 'GitHub account has been linked.' });
             done(err, user);
@@ -83,8 +81,6 @@ passport.use(new GitHubStrategy({
           user.tokens.push({ kind: 'github', accessToken: accessToken });
           user.profile.name = profile.displayName;
           user.profile.picture = profile._json.avatar_url;
-          user.profile.location = profile._json.location;
-          user.profile.website = profile._json.blog;
           user.save(function(err) {
             done(err, user);
           });
@@ -95,6 +91,57 @@ passport.use(new GitHubStrategy({
   }
 }));
 
+/**
+ * Sign in with Google.
+ */
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_ID,
+  clientSecret: process.env.GOOGLE_SECRET,
+  callbackURL: '/auth/google/callback',
+  passReqToCallback: true
+}, function(req, accessToken, refreshToken, profile, done) {
+  if (req.user) {
+    User.findOne({ google: profile.id }, function(err, existingUser) {
+      if (existingUser) {
+        req.flash('errors', { msg: 'There is already a Google account that belongs to you. Sign in with that account or delete it, then link it with your current account.' });
+        done(err);
+      } else {
+        User.findById(req.user.id, function(err, guser) {
+          guser.google = profile.id;
+          guser.tokens.push({ kind: 'google', accessToken: accessToken });
+          guser.profile.name = user.profile.name || profile.displayName;
+          guser.profile.picture = user.profile.picture || profile._json.image.url;
+          guser.save(function(err) {
+            req.flash('info', { msg: 'Google account has been linked.' });
+            done(err, user);
+          });
+        });
+      }
+    });
+  } else {
+    User.findOne({ google: profile.id }, function(err, existingUser) {
+      if (existingUser) {
+        return done(null, existingUser);
+      }
+      User.findOne({ email: profile.emails[0].value }, function(err, existingEmailUser) {
+        if (existingEmailUser) {
+          req.flash('errors', { msg: 'There is already an account using this email address. Sign in to that account and link it with Google manually from Account Settings.' });
+          done(err);
+        } else {
+          var user = new User();
+          guser.email = profile.emails[0].value;
+          guser.google = profile.id;
+          guser.tokens.push({ kind: 'google', accessToken: accessToken });
+          guser.profile.name = profile.displayName;
+          guser.profile.picture = profile._json.image.url;
+          guser.save(function(err) {
+            done(err, guser);
+          });
+        }
+      });
+    });
+  }
+}));
 
 /*
  * Login Required middleware.

@@ -5,18 +5,23 @@ var mongoose = require('mongoose');
 var userSchema = new mongoose.Schema({
   email: { type: String, lowercase: true, unique: true },
   password: String,
-  passwordResetToken: String,
-  passwordResetExpires: Date,
-
   github: String,
   tokens: Array,
 
   profile: {
     name: { type: String, default: '' },
-    gender: { type: String, default: '' },
-    location: { type: String, default: '' },
-    website: { type: String, default: '' },
     picture: { type: String, default: '' }
+  }
+}, { timestamps: true });
+
+var userSchemaGoogle = new mongoose.Schema({
+  email: { type: String, lowercase: true, unique: true },
+
+  google: String,
+  tokens: Array,
+
+  profile: {
+    name: { type: String, default: '' },
   }
 }, { timestamps: true });
 
@@ -41,6 +46,26 @@ userSchema.pre('save', function(next) {
     });
   });
 });
+
+userSchemaGoogle.pre('save', function(next) {
+  var guser = this;
+  if (!guser.isModified('password')) {
+    return next();
+  }
+  bcrypt.genSalt(10, function(err, salt) {
+    if (err) {
+      return next(err);
+    }
+    bcrypt.hash(user.password, salt, null, function(err, hash) {
+      if (err) {
+        return next(err);
+      }
+      user.password = hash;
+      next();
+    });
+  });
+});
+
 
 /**
  * Helper method for validating user's password.

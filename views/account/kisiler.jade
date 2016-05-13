@@ -1,0 +1,59 @@
+extends ../layout
+
+block content
+  .page-header
+
+  h2  Hoş Geldin Admin :D
+
+  form.form-horizontal(method='POST')
+    input(type='hidden', name='_csrf', value=_csrf)
+    .form-group
+
+
+     .col-sm-7
+
+
+  style.
+    table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    }
+    th, td {
+    padding: 5px;
+    }
+    tr.head{
+    font-size: 20px;
+    }
+    img{
+    width:25px;
+    height:30px;
+    }
+
+  table(style='width:100%')
+    tr.head
+      th Profil
+      th İsim
+      th E-mail
+    tr
+
+    - each user in users
+      th
+
+          img.ui.avatar.image(class='profile' src='#{user.profile.picture}')
+
+      th #{user.profile.name}
+      th #{user.email}
+
+      tr
+
+
+      .ui.middle.aligned.divided.list
+          .item
+            .right.floated.content
+
+
+            img.ui.avatar.image(src='#{user.profile.picture}')
+            .content
+              | #{user.profile.name}
+              |#{user.email}
+          .item

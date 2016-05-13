@@ -3,3 +3,12 @@ extends ../layout
 block content
   .page-header
   h2  Hoş Geldin Admin :D
+  form.form-horizontal(method='POST')
+    input(type='hidden', name='_csrf', value=_csrf)
+    .form-group
+
+
+     .col-sm-7
+     a.btn.btn-block.btn-github.btn-social(href='/kisiler')
+
+       | kisiler

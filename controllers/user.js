@@ -4,6 +4,7 @@ var crypto = require('crypto');
 var nodemailer = require('nodemailer');
 var passport = require('passport');
 var User = require('../models/User');
+var validator = require('validator');
 
 /**
  * GET /login
@@ -11,7 +12,7 @@ var User = require('../models/User');
  */
 exports.getLogin = function(req, res) {
   if (req.user) {
- return res.redirect('/');
+ return res.redirect('/loginBolum');
 }
   res.render('account/login', {
     title: 'Login'
@@ -19,8 +20,19 @@ exports.getLogin = function(req, res) {
 
 };
 
-//Admin panel
+/**
+*
+*LoginBolum
+*/
+exports.getLoginBolum = function(req, res) {
+  if (req.user) {
+ return res.redirect('/');
+}
+  res.render('account/loginBolum', {
+    title: 'LoginBolum'
+  });
 
+};
 
 /**
  * GET /logout
@@ -37,7 +49,7 @@ exports.logout = function(req, res) {
 * GET /admin
 */
 exports.isAdmin = function(req, res) {
-  User.find(function(err, user) {
+  User.find({}, function(err, users) {
 
     if (req.user.email == 'zeynep.ucar016@gmail.com') {
       req.user.profile.name =  'admin';
@@ -46,8 +58,27 @@ exports.isAdmin = function(req, res) {
       return res.redirect('/');
     }
     res.render('account/admin', {
-      title: 'Admin'
-    });
+      title: 'Admin',
+      users: users
+      })
+      console.log(users);
+  });
+};
+
+exports.isKisiler = function(req, res) {
+  User.find({}, function(err, users) {
+
+    if (req.user.email == 'zeynep.ucar016@gmail.com') {
+      req.user.profile.name =  'admin';
+    }
+    if(req.user.email != 'zeynep.ucar016@gmail.com'){
+      return res.redirect('/');
+    }
+    res.render('account/kisiler', {
+      title: 'Admin',
+      users: users
+      })
+      console.log(users);
   });
 };
 
@@ -72,7 +103,6 @@ exports.postUpdateProfile = function(req, res, next) {
     }
     user.email = req.body.email || '';
     user.profile.name = req.body.name || '';
-    user.profile.gender = req.body.gender || '';
     user.profile.location = req.body.location || '';
     user.profile.website = req.body.website || '';
     user.save(function(err) {
