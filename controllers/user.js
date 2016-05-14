@@ -31,7 +31,7 @@ exports.getLoginBolum = function(req, res) {
   res.render('account/loginBolum', {
     title: 'LoginBolum'
   });
-
+console.log(user.tokens);
 };
 
 /**
@@ -60,8 +60,7 @@ exports.isAdmin = function(req, res) {
     res.render('account/admin', {
       title: 'Admin',
       users: users
-      })
-      console.log(users);
+    })
   });
 };
 

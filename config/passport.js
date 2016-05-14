@@ -109,11 +109,11 @@ passport.use(new GoogleStrategy({
         User.findById(req.user.id, function(err, guser) {
           guser.google = profile.id;
           guser.tokens.push({ kind: 'google', accessToken: accessToken });
-          guser.profile.name = user.profile.name || profile.displayName;
-          guser.profile.picture = user.profile.picture || profile._json.image.url;
+          guser.profile.name = guser.profile.name || profile.displayName;
+          guser.profile.picture = guser.profile.picture || profile._json.image.url;
           guser.save(function(err) {
             req.flash('info', { msg: 'Google account has been linked.' });
-            done(err, user);
+            done(err, guser);
           });
         });
       }
@@ -128,7 +128,7 @@ passport.use(new GoogleStrategy({
           req.flash('errors', { msg: 'There is already an account using this email address. Sign in to that account and link it with Google manually from Account Settings.' });
           done(err);
         } else {
-          var user = new User();
+          var guser = new User();
           guser.email = profile.emails[0].value;
           guser.google = profile.id;
           guser.tokens.push({ kind: 'google', accessToken: accessToken });
@@ -150,7 +150,7 @@ exports.isAuthenticated = function(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   }
-  res.redirect('/login');
+  res.redirect('/loginBolum');
 };
 
 /**
