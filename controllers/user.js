@@ -12,7 +12,7 @@ var validator = require('validator');
  */
 exports.getLogin = function(req, res) {
   if (req.user) {
- return res.redirect('/loginBolum');
+ return res.redirect('/admin');
 }
   res.render('account/login', {
     title: 'Login'
@@ -26,12 +26,12 @@ exports.getLogin = function(req, res) {
 */
 exports.getLoginBolum = function(req, res) {
   if (req.user) {
- return res.redirect('/');
+ return res.redirect('/logout');
 }
   res.render('account/loginBolum', {
     title: 'LoginBolum'
   });
-console.log(user.tokens);
+
 };
 
 /**
@@ -43,6 +43,12 @@ exports.logout = function(req, res) {
   res.redirect('/');
 };
 
+//Google logout
+exports.glogout = function(req, res) {
+  req.logout();
+  res.redirect('/login');
+};
+
 
 
 /**
@@ -51,14 +57,14 @@ exports.logout = function(req, res) {
 exports.isAdmin = function(req, res) {
   User.find({}, function(err, users) {
 
-    if (req.user.email == 'zeynep.ucar016@gmail.com') {
-      req.user.profile.name =  'admin';
+    if (req.user.email == 'zeynep.ucar016@gmail.com' | req.user.email == 'merve.genel@bil.omu.edu.tr' ) {
+      req.user.profile.name =  'Yönetici';
     }
-    if(req.user.email != 'zeynep.ucar016@gmail.com'){
+    if(req.user.email != 'zeynep.ucar016@gmail.com' & req.user.email != 'merve.genel@bil.omu.edu.tr'){
       return res.redirect('/');
     }
     res.render('account/admin', {
-      title: 'Admin',
+      title: 'Yönetici',
       users: users
     })
   });
@@ -67,14 +73,14 @@ exports.isAdmin = function(req, res) {
 exports.isKisiler = function(req, res) {
   User.find({}, function(err, users) {
 
-    if (req.user.email == 'zeynep.ucar016@gmail.com') {
-      req.user.profile.name =  'admin';
+    if (req.user.email == 'zeynep.ucar016@gmail.com' | req.user.email == 'merve.genel@bil.omu.edu.tr') {
+      req.user.profile.name =  'Yönetici';
     }
-    if(req.user.email != 'zeynep.ucar016@gmail.com'){
+    if(req.user.email != 'zeynep.ucar016@gmail.com' & req.user.email != 'merve.genel@bil.omu.edu.tr'){
       return res.redirect('/');
     }
     res.render('account/kisiler', {
-      title: 'Admin',
+      title: 'Yönetici',
       users: users
       })
       console.log(users);

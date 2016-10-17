@@ -3,7 +3,7 @@ extends ../layout
 block content
   .page-header
 
-  h2  Hoş Geldin Admin :D
+  h2  Hoş Geldin Yönetici :D
 
   form.form-horizontal(method='POST')
     input(type='hidden', name='_csrf', value=_csrf)
@@ -12,7 +12,7 @@ block content
        input.prompt(type='text', placeholder='Search countries...')
        i.search.icon
      .results
-     #{users}
+
     .form-group
      .col-sm-7
 
@@ -26,13 +26,17 @@ block content
      tbody
      - each user in users
        tr
-       td
-        img.ui.avatar.image(class='profile' src='#{user.profile.picture}')
 
-       td #{user.profile.name}
-       td #{user.tokens}
-       if user.tokens.kind == "github"
-        td #{user.email}
-       if user.tokens.kind == "google"
+       td
+        a(href='#{user.html_url}')
+         img.ui.avatar.image(class='profile' src='#{user.profile.picture}')
+
+       td
+        a(href='#{user.html_url}')
+         | #{user.profile.name}
+       if user.google
+       td #{user.email}
+
+       if user.github
         td #{user.email}
        tr

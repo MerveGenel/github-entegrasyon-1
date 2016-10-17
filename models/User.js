@@ -7,7 +7,8 @@ var userSchema = new mongoose.Schema({
   password: String,
   github: String,
   tokens: Array,
-
+  html_url: String,
+  login : String,
   profile: {
     name: { type: String, default: '' },
     picture: { type: String, default: '' }
@@ -47,24 +48,6 @@ userSchema.pre('save', function(next) {
   });
 });
 
-userSchemaGoogle.pre('save', function(next) {
-  var guser = this;
-  if (!guser.isModified('password')) {
-    return next();
-  }
-  bcrypt.genSalt(10, function(err, salt) {
-    if (err) {
-      return next(err);
-    }
-    bcrypt.hash(user.password, salt, null, function(err, hash) {
-      if (err) {
-        return next(err);
-      }
-      user.password = hash;
-      next();
-    });
-  });
-});
 
 
 /**
@@ -78,6 +61,7 @@ userSchema.methods.comparePassword = function(candidatePassword, cb) {
     cb(null, isMatch);
   });
 };
+
 
 /**
  * Helper method for getting user's gravatar.

@@ -104,6 +104,7 @@ app.get('/', homeController.index);
 app.get('/login', userController.getLogin);
 app.get('/loginBolum', userController.getLoginBolum);
 app.get('/logout', userController.logout);
+app.get('/glogout', userController.glogout);
 app.get('/admin', userController.isAdmin);
 app.get('/kisiler', userController.isKisiler);
 app.get('/account', passportConfig.isAuthenticated, userController.getAccount);
@@ -114,7 +115,10 @@ app.post('/account/delete', passportConfig.isAuthenticated, userController.postD
  * API examples routes.
  */
 
-
+ app.set('trust proxy', function (ip) {
+   if (ip === '193.140.28.8') return true; // trusted IPs
+   else return false;
+ });
 
 
 /**
@@ -129,7 +133,7 @@ app.get('/auth/github/callback', passport.authenticate('github', { failureRedire
 //gmail
 app.get('/auth/google', passport.authenticate('google', { scope: 'profile email' }));
 app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), function(req, res) {
-  res.redirect(req.session.returnTo || '/login');
+  res.redirect(req.session.returnTo || '/glogout');
 });
 
 /**

@@ -49,21 +49,6 @@ passport.use(new GitHubStrategy({
 }, function(req, accessToken, refreshToken, profile, done) {
   if (req.user) {
     User.findOne({ github: profile.id }, function(err, existingUser) {
-      if (existingUser) {
-        req.flash('errors', { msg: 'There is already a GitHub account that belongs to you. Sign in with that account or delete it, then link it with your current account.' });
-        done(err);
-      } else {
-        User.findById(req.user.id, function(err, user) {
-          user.github = profile.id;
-          user.tokens.push({ kind: 'github', accessToken: accessToken });
-          user.profile.name = user.profile.name || profile.displayName;
-          user.profile.picture = user.profile.picture || profile._json.avatar_url;
-          user.save(function(err) {
-            req.flash('info', { msg: 'GitHub account has been linked.' });
-            done(err, user);
-          });
-        });
-      }
     });
   } else {
     User.findOne({ github: profile.id }, function(err, existingUser) {
@@ -72,11 +57,13 @@ passport.use(new GitHubStrategy({
       }
       User.findOne({ email: profile._json.email }, function(err, existingEmailUser) {
         if (existingEmailUser) {
-          req.flash('errors', { msg: 'There is already an account using this email address. Sign in to that account and link it with GitHub manually from Account Settings.' });
+          req.flash('errors', { msg: '' });
           done(err);
         } else {
           var user = new User();
+          user.html_url = profile._json.html_url;
           user.email = profile._json.email;
+          user.login = profile._json.login;
           user.github = profile.id;
           user.tokens.push({ kind: 'github', accessToken: accessToken });
           user.profile.name = profile.displayName;
@@ -102,21 +89,7 @@ passport.use(new GoogleStrategy({
 }, function(req, accessToken, refreshToken, profile, done) {
   if (req.user) {
     User.findOne({ google: profile.id }, function(err, existingUser) {
-      if (existingUser) {
-        req.flash('errors', { msg: 'There is already a Google account that belongs to you. Sign in with that account or delete it, then link it with your current account.' });
-        done(err);
-      } else {
-        User.findById(req.user.id, function(err, guser) {
-          guser.google = profile.id;
-          guser.tokens.push({ kind: 'google', accessToken: accessToken });
-          guser.profile.name = guser.profile.name || profile.displayName;
-          guser.profile.picture = guser.profile.picture || profile._json.image.url;
-          guser.save(function(err) {
-            req.flash('info', { msg: 'Google account has been linked.' });
-            done(err, guser);
-          });
-        });
-      }
+
     });
   } else {
     User.findOne({ google: profile.id }, function(err, existingUser) {
@@ -125,7 +98,7 @@ passport.use(new GoogleStrategy({
       }
       User.findOne({ email: profile.emails[0].value }, function(err, existingEmailUser) {
         if (existingEmailUser) {
-          req.flash('errors', { msg: 'There is already an account using this email address. Sign in to that account and link it with Google manually from Account Settings.' });
+          req.flash('errors', { msg: '' });
           done(err);
         } else {
           var guser = new User();
@@ -150,7 +123,7 @@ exports.isAuthenticated = function(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   }
-  res.redirect('/loginBolum');
+  res.redirect('/login');
 };
 
 /**
